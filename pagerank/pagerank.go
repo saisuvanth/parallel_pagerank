@@ -15,7 +15,7 @@ type workerStruct struct {
 }
 
 func NormalizeRanks(graph *Graph) {
-	sum := float32(0)
+	sum := float64(0)
 	for _, rank := range graph.nodes {
 		sum += rank
 	}
@@ -24,33 +24,38 @@ func NormalizeRanks(graph *Graph) {
 	}
 }
 
-func Rank(graph *Graph, dampFactor float32, threshold float32) {
+func Rank(graph *Graph, dampFactor float64, threshold float64) {
 	n := len(graph.nodes)
-	graph.InitRanks()
+	// graph.InitRanks()
 	fmt.Println(n)
+	i := 0
 	for {
-		newRanks := make(map[int32]float32)
+		i++
+		newRanks := make(map[int32]float64)
 		for _, edge := range graph.edges {
-			newRanks[edge.dst] += graph.nodes[edge.src] / float32(n)
+			newRanks[edge.dst] += graph.nodes[edge.src] / float64(n)
 		}
-		fmt.Println("Completed")
-		maxDiff := float32(0)
+		fmt.Println(len(newRanks))
+		maxDiff := float64(0)
 		for nodeId, rank := range graph.nodes {
-			newRank := (1-dampFactor)/float32(n) + dampFactor*newRanks[nodeId]
+			newRank := (1-dampFactor)/float64(n) + dampFactor*newRanks[nodeId]
 			diff := newRank - rank
+			if diff > 0.0 {
+				fmt.Println(diff)
+			}
 			if diff > maxDiff {
 				maxDiff = diff
 			}
 			graph.nodes[nodeId] = newRank
 		}
+		fmt.Println(maxDiff)
 
 		if maxDiff < threshold {
 			break
 		}
 	}
-	fmt.Println("Completed 1")
-
-	NormalizeRanks(graph)
+	fmt.Println("Completed ", i, " iterations")
+	// NormalizeRanks(graph)
 }
 
 func GraphInitFromFile(filename string) Graph {

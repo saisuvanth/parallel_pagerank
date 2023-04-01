@@ -1,14 +1,17 @@
 package pagerank
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type Graph struct {
-	nodes map[int32]float32
+	nodes map[int32]float64
 	edges []Edge
 }
 
 func (g Graph) Init() Graph {
-	new_graph := Graph{nodes: make(map[int32]float32), edges: make([]Edge, 0)}
+	new_graph := Graph{nodes: make(map[int32]float64), edges: make([]Edge, 0)}
 	return new_graph
 }
 
@@ -35,7 +38,7 @@ func (g *Graph) AddEdges(edges ...Edge) {
 func (g *Graph) InitRanks() {
 	n := len(g.nodes)
 	for nodeId := range g.nodes {
-		g.nodes[nodeId] = 1.0 / float32(n)
+		g.nodes[nodeId] = 1.0 / float64(n)
 	}
 }
 
@@ -50,5 +53,17 @@ func (g *Graph) GetEdgesLen() int {
 func (g *Graph) PrintRanks() {
 	for nodeId, rank := range g.nodes {
 		fmt.Println(nodeId, rank)
+		// fmt.Printf("%d : %f\n", nodeId, rank)
+	}
+}
+
+func (g *Graph) SaveToFile(filename string) {
+	file, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	for nodeId, rank := range g.nodes {
+		file.WriteString(fmt.Sprintf("%d : %.12f\n", nodeId, rank))
 	}
 }
