@@ -3,7 +3,6 @@ package pagerank
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"os"
 )
 
@@ -39,13 +38,13 @@ func ReadFile(ctx context.Context, file *os.File, batchSize int, rowsBatch *[]st
 	return out
 }
 
-func SaveMaptoFile(nodes *map[int32]float64) {
-	file, err := os.Create("saved.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	for nodeId, rank := range *nodes {
-		file.WriteString(fmt.Sprintf("%d : %.12f\n", nodeId, rank))
-	}
+func SaveMaptoFile(nodes *map[int32]float64, filename string) {
+	// file, err := os.Create(filename)
+	// if err != nil {
+	// panic(err)
+	// }
+	// defer file.Close()
+	// for nodeId, rank := range *nodes {
+	// file.WriteString(fmt.Sprintf("%d : %.12f\n", nodeId, rank))
+	// }
 }

@@ -3,7 +3,6 @@ package pagerank
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -24,38 +23,25 @@ func NormalizeRanks(graph *Graph) {
 	}
 }
 
-func Rank(graph *Graph, dampFactor float64, threshold float64) {
+func Rank(graph *Graph, dampFactor float64, iterations int) {
 	n := len(graph.nodes)
-	// graph.InitRanks()
-	fmt.Println(n)
-	i := 0
-	for {
-		i++
+	for i := 0; i < iterations; i++ {
 		newRanks := make(map[int32]float64)
 		for _, edge := range graph.edges {
 			newRanks[edge.dst] += graph.nodes[edge.src] / float64(n)
 		}
-		fmt.Println(len(newRanks))
 		maxDiff := float64(0)
 		for nodeId, rank := range graph.nodes {
 			newRank := (1-dampFactor)/float64(n) + dampFactor*newRanks[nodeId]
 			diff := newRank - rank
-			if diff > 0.0 {
-				fmt.Println(diff)
-			}
 			if diff > maxDiff {
 				maxDiff = diff
 			}
 			graph.nodes[nodeId] = newRank
 		}
-		fmt.Println(maxDiff)
 
-		if maxDiff < threshold {
-			break
-		}
 	}
-	fmt.Println("Completed ", i, " iterations")
-	// NormalizeRanks(graph)
+	NormalizeRanks(graph)
 }
 
 func GraphInitFromFile(filename string) Graph {
