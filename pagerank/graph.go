@@ -10,6 +10,14 @@ type Graph struct {
 	edges []Edge
 }
 
+func (g Graph) GetNodes() map[int32]float64 {
+	return g.nodes
+}
+
+func (g Graph) GetEdges() []Edge {
+	return g.edges
+}
+
 func (g Graph) Init() Graph {
 	new_graph := Graph{nodes: make(map[int32]float64), edges: make([]Edge, 0)}
 	return new_graph
