@@ -9,7 +9,7 @@ func Combiner(ctx context.Context, inputs ...<-chan workerStruct) <-chan workerS
 	out := make(chan workerStruct)
 
 	var wg sync.WaitGroup
-	multiplexer := func(p <-chan workerStruct) {
+	combiner := func(p <-chan workerStruct) {
 		defer wg.Done()
 
 		for in := range p {
@@ -22,7 +22,7 @@ func Combiner(ctx context.Context, inputs ...<-chan workerStruct) <-chan workerS
 
 	wg.Add(len(inputs))
 	for _, in := range inputs {
-		go multiplexer(in)
+		go combiner(in)
 	}
 
 	go func() {

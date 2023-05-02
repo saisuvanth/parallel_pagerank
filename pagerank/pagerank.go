@@ -111,13 +111,13 @@ func GraphInitFromFileParallel(filename string, batchSize int, workerThreads int
 	rowsBatch := []string{}
 	rowBatch := ReadFile(ctx, file, batchSize, &rowsBatch)
 
-	workerChan := make([]<-chan workerStruct, workerThreads)
+	workerChannels := make([]<-chan workerStruct, workerThreads)
 
 	for i := 0; i < workerThreads; i++ {
-		workerChan[i] = worker(ctx, rowBatch)
+		workerChannels[i] = worker(ctx, rowBatch)
 	}
 
-	for res := range Combiner(ctx, workerChan...) {
+	for res := range Combiner(ctx, workerChannels...) {
 		graph.AddNodes(res.nodes...)
 		graph.AddEdges(res.edges...)
 	}
